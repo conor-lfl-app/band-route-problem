@@ -27,4 +27,9 @@ If you have questions on the challenge, please contact Jared Sartin: jared@leftf
 
 # Candidate Notes:
 
-### Fill in comments, external tool usage, and time tracking
+Tools Used:
+Babel
+
+Started project: 7:46pm
+
+To run the project, just pop open the index.html page in the static directory. Thank you!
