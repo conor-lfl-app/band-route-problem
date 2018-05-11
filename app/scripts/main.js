@@ -44,30 +44,32 @@ class TourMapper {
     const stopsToMake = stops || destinations.length // how many stops are we accumulating in our route
     const route = [startingPoint] // route to be returned by function; route begins with starting point as the first stop
 
-    const routeBuilder = ({startingPoint, destinations}) => {
-      const {
-        shortestDestination,
-        remainingDestinations } = this.findShortestDestination(startingPoint, destinations)
-
-      // add the currentPoint to the list of stops
-      route.push(shortestDestination) // add the currentPoint to the list of stops
-
-      const routeFinished = route.length > stopsToMake // we use ">" here because we added the starting point to the route by default
-      const noMoreDestinations = !remainingDestinations || remainingDestinations.length === 0
-      const keepBuildingRoute = !routeFinished && !noMoreDestinations
-
-      // if there are more routes to find, we keep iterating
-      if ( keepBuildingRoute ) {
-        return routeBuilder({
-          startingPoint: shortestDestination,
-          destinations: remainingDestinations
-        })
+    let currentPoint1
+    let currentPoint2
+    let firstHalf = []
+    let secondHalf = []
+    let remainingDestinations = destinations
+    for (var i=0; i<stopsToMake; i+=2) {
+      const startingPoint1 = currentPoint1 ? currentPoint1 : startingPoint
+      const startingPoint2 = currentPoint2 ? currentPoint2 : startingPoint
+      console.log('startingPoint1', startingPoint1)
+      console.log('startingPoint1', startingPoint2)
+      if (remainingDestinations && remainingDestinations.length > 0) {
+        const route1 = this.findShortestDestination(startingPoint1, remainingDestinations)
+        currentPoint1 = route1.shortestDestination
+        firstHalf.push(currentPoint1)
+        remainingDestinations = route1.remainingDestinations
       }
 
-      return route
+      if (remainingDestinations && remainingDestinations.length > 0) {
+        const route2 = this.findShortestDestination(startingPoint2, remainingDestinations)
+        currentPoint2 = route2.shortestDestination
+        secondHalf.push(currentPoint2)
+        remainingDestinations = route2.remainingDestinations
+      }
     }
 
-    return routeBuilder({startingPoint, destinations})
+    return [...firstHalf, ...secondHalf.reverse()]
   }
 
   createMap () {

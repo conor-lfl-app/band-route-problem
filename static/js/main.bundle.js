@@ -63,8 +63,6 @@ var TourMapper = function () {
   }, {
     key: 'createOptimalRouteFrom',
     value: function createOptimalRouteFrom(_ref) {
-      var _this = this;
-
       var startingPoint = _ref.startingPoint,
           destinations = _ref.destinations,
           stops = _ref.stops;
@@ -72,40 +70,37 @@ var TourMapper = function () {
       var stopsToMake = stops || destinations.length; // how many stops are we accumulating in our route
       var route = [startingPoint]; // route to be returned by function; route begins with starting point as the first stop
 
-      var routeBuilder = function routeBuilder(_ref2) {
-        var startingPoint = _ref2.startingPoint,
-            destinations = _ref2.destinations;
-
-        var _findShortestDestinat = _this.findShortestDestination(startingPoint, destinations),
-            shortestDestination = _findShortestDestinat.shortestDestination,
-            remainingDestinations = _findShortestDestinat.remainingDestinations;
-
-        // add the currentPoint to the list of stops
-
-
-        route.push(shortestDestination); // add the currentPoint to the list of stops
-
-        var routeFinished = route.length > stopsToMake; // we use ">" here because we added the starting point to the route by default
-        var noMoreDestinations = !remainingDestinations || remainingDestinations.length === 0;
-        var keepBuildingRoute = !routeFinished && !noMoreDestinations;
-
-        // if there are more routes to find, we keep iterating
-        if (keepBuildingRoute) {
-          return routeBuilder({
-            startingPoint: shortestDestination,
-            destinations: remainingDestinations
-          });
+      var currentPoint1 = void 0;
+      var currentPoint2 = void 0;
+      var firstHalf = [];
+      var secondHalf = [];
+      var remainingDestinations = destinations;
+      for (var i = 0; i < stopsToMake; i += 2) {
+        var startingPoint1 = currentPoint1 ? currentPoint1 : startingPoint;
+        var startingPoint2 = currentPoint2 ? currentPoint2 : startingPoint;
+        console.log('startingPoint1', startingPoint1);
+        console.log('startingPoint1', startingPoint2);
+        if (remainingDestinations && remainingDestinations.length > 0) {
+          var route1 = this.findShortestDestination(startingPoint1, remainingDestinations);
+          currentPoint1 = route1.shortestDestination;
+          firstHalf.push(currentPoint1);
+          remainingDestinations = route1.remainingDestinations;
         }
 
-        return route;
-      };
+        if (remainingDestinations && remainingDestinations.length > 0) {
+          var route2 = this.findShortestDestination(startingPoint2, remainingDestinations);
+          currentPoint2 = route2.shortestDestination;
+          secondHalf.push(currentPoint2);
+          remainingDestinations = route2.remainingDestinations;
+        }
+      }
 
-      return routeBuilder({ startingPoint: startingPoint, destinations: destinations });
+      return [].concat(firstHalf, _toConsumableArray(secondHalf.reverse()));
     }
   }, {
     key: 'createMap',
     value: function createMap() {
-      var _this2 = this;
+      var _this = this;
 
       //Create a Pixi Application
       var xCoords = this.points.map(function (point) {
@@ -161,8 +156,8 @@ var TourMapper = function () {
       var totalAnimationDuration = 0;
       var totalDistance = 0;
       var tourLines = this.route.map(function (point, i) {
-        if (i < _this2.route.length - 1) {
-          var point2 = _this2.route[i + 1];
+        if (i < _this.route.length - 1) {
+          var point2 = _this.route[i + 1];
           console.log(point, point2);
           var line = document.createElement('div');
           line.classList.add('line');
