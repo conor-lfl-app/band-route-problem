@@ -28,10 +28,14 @@ class TourMapper {
   }
 
   // finds the shortest distance between a point and it's potential destinations
-  findShortestDestination (point, destinations) {
+  findShortestDestination (point, destinations, accuracy=5) {
     const remainingDestinations = [...destinations]
     const distances = this.mapDistances(point, remainingDestinations)
     // TODO: solve edge case for situations where there is a tie for the shortest distance
+
+    const shortestDistances = [...distances].sort((a, b) => a - b).splice(0, Math.max(5,distances.length))
+    console.log(shortestDistances)
+
     const shortestDistance = Math.min(...distances)
     const shortestDestinationIndex = distances.indexOf(shortestDistance)
     const shortestDestination = remainingDestinations.splice(shortestDestinationIndex, 1)[0]
@@ -42,18 +46,16 @@ class TourMapper {
   // finds and orders the shortest paths to each successive point
   createOptimalRouteFrom ({startingPoint, destinations, stops}) {
     const stopsToMake = stops || destinations.length // how many stops are we accumulating in our route
-    const route = [startingPoint] // route to be returned by function; route begins with starting point as the first stop
 
     let currentPoint1
     let currentPoint2
-    let firstHalf = []
+    let firstHalf = [startingPoint] // route begins with starting point as the first stop
     let secondHalf = []
     let remainingDestinations = destinations
     for (var i=0; i<stopsToMake; i+=2) {
       const startingPoint1 = currentPoint1 ? currentPoint1 : startingPoint
       const startingPoint2 = currentPoint2 ? currentPoint2 : startingPoint
-      console.log('startingPoint1', startingPoint1)
-      console.log('startingPoint1', startingPoint2)
+
       if (remainingDestinations && remainingDestinations.length > 0) {
         const route1 = this.findShortestDestination(startingPoint1, remainingDestinations)
         currentPoint1 = route1.shortestDestination
@@ -73,7 +75,6 @@ class TourMapper {
   }
 
   createMap () {
-    //Create a Pixi Application
     const xCoords = this.points.map( point => point.x )
     const minX = Math.min(...xCoords)
     const relXCoords = this.points.map( point => point.x - minX )
@@ -89,6 +90,7 @@ class TourMapper {
     const lineContainer = document.getElementById('lines')
     const canvasWidth = ((padding * 2) + maxX) + 'px'
     const canvasHeight = ((padding * 2) + maxY) + 'px'
+
     markerContainer.style.width = canvasWidth
     markerContainer.style.height = canvasHeight
     lineContainer.style.width = canvasWidth
@@ -119,21 +121,22 @@ class TourMapper {
     const tourLines = this.route.map( (point, i) => {
       if (i < this.route.length - 1) {
         const point2 = this.route[i + 1]
-        console.log(point, point2)
         const line = document.createElement('div')
         line.classList.add('line')
         line.style.width = '5px'
+
         const distanceX = Math.pow(point.x - point2.x, 2)
         const distanceY = Math.pow(point.y - point2.y, 2)
         const height = Math.sqrt(distanceX + distanceY)
 
         totalDistance += height
 
+        const angleRadians = Math.atan2(point2.y - point.y, point2.x - point.x);
+        const angleDeg = (Math.atan2(point2.y - point.y, point2.x - point.x) * 180 / Math.PI) + 90;
+
         line.style.height = height + 'px'
         line.style.left = (point.x + padding - minX) + 5 + 'px'
         line.style.top = (point.y + padding - minY) - height + 5 + 'px'
-        var angleRadians = Math.atan2(point2.y - point.y, point2.x - point.x);
-        var angleDeg = (Math.atan2(point2.y - point.y, point2.x - point.x) * 180 / Math.PI) + 90;
         line.style.transform = `rotate(${angleDeg}deg)`
 
         const lineAnimation = document.createElement('div')
