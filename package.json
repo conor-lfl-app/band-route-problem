@@ -1,0 +1,33 @@
+{
+  "name": "conor-lfl-app",
+  "version": "1.0.0",
+  "description": "The year is 2092. A budding young vocalist and his band have just enough money to buy a hovercar and begin their tour. They have struck deals with multiple venues and can set their own tour schedule, any venue in any order. Can you help them find the shortest route to take to hit all cities to maximize their fuel budget?",
+  "main": "index.js",
+  "watch": {
+    "babel": "app/scripts/*.js"
+  },
+  "scripts": {
+    "babel": "babel --presets es2015 app/scripts/main.js -o static/js/main.bundle.js",
+    "start": "npm run babel && http-server",
+    "watch": "npm-watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/conor-lfl-app/band-route-problem.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/conor-lfl-app/band-route-problem/issues"
+  },
+  "homepage": "https://github.com/conor-lfl-app/band-route-problem#readme",
+  "dependencies": {
+    "npm-watch": "^0.3.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-preset-es2015": "^6.24.1",
+    "http-server": "^0.11.1"
+  }
+}
