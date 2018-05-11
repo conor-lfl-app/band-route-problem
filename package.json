@@ -22,7 +22,8 @@
   },
   "homepage": "https://github.com/conor-lfl-app/band-route-problem#readme",
   "dependencies": {
-    "npm-watch": "^0.3.0"
+    "npm-watch": "^0.3.0",
+    "pixi.js": "^4.7.3"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

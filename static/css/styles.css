@@ -1,2 +1,72 @@
 body {
+  position: static;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0;
+  background: #EEEEEE;
+  font-family: 'Open Sans', sans-serif;
+}
+
+canvas {
+}
+#lines,
+#markers {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#markers {
+  z-index: 1;
+}
+
+#lines {
+  z-index: 0;
+}
+
+.label {
+  position: absolute;
+  z-index: 3;
+}
+
+.marker {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+  transform: translateX(-50%, -50%);
+  background: #7b69a0;
+}
+
+.marker.home {
+  background: #c72f2f;
+}
+
+@keyframes line-animate-in {
+  0% {
+    transform: translateY(100%)
+  }
+  100% {
+    transform: translateY(0%)
+  }
+}
+
+.line {
+  position: absolute;
+  transform-origin: bottom center;
+  overflow: hidden;
+}
+
+.line-animation {
+  background: #7ca9d2;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  animation-name: line-animate-in;
+  animation-fill-mode: backwards;
 }
