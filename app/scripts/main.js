@@ -34,7 +34,6 @@ class TourMapper {
     // TODO: solve edge case for situations where there is a tie for the shortest distance
 
     const shortestDistances = [...distances].sort((a, b) => a - b).splice(0, Math.max(5,distances.length))
-    console.log(shortestDistances)
 
     const shortestDistance = Math.min(...distances)
     const shortestDestinationIndex = distances.indexOf(shortestDistance)
@@ -96,24 +95,53 @@ class TourMapper {
     lineContainer.style.width = canvasWidth
     lineContainer.style.height = canvasHeight
 
+    const handleMarkerHover = (e) => {
+      const activeElements = document.getElementsByClassName('marker--active')
+      console.log(activeElements)
+      if (activeElements && activeElements.length > 0) {
+        for (var i = 0; i < activeElements.length; i++) {
+            activeElements[i].classList.remove('marker--active')
+        }
+      }
+      e.target.classList.add('marker--active')
+    }
+
+    const handleMarkerLeave = (e) => {
+      e.target.classList.remove('marker--active')
+    }
+
     const tourMarkers = this.points.map( (point, i) => {
       const { x, y } = point
 
       const marker = document.createElement('div')
       if (i === 0) {
-        marker.classList.add('home')
+        marker.classList.add('home', 'marker--active')
       }
+
       marker.classList.add('marker')
       marker.style.left = (x + padding - minX) + 'px';
       marker.style.top = (y + padding - minY) + 'px'
       markerContainer.appendChild(marker)
+      marker.addEventListener('mouseover', handleMarkerHover)
+      marker.addEventListener('mouseleave', handleMarkerLeave)
 
       const label = document.createElement('div')
       label.classList.add('label')
-      label.innerHTML = `${x}, ${y}`
-      label.style.left = (x + padding - minX) + 5 + 'px';
-      label.style.top = (y + padding - minY) - 20 + 'px'
-      markerContainer.appendChild(label)
+      const stopNumber = this.route.indexOf(point)
+      label.innerHTML = `${i === 0 ? 'Home' : 'Stop ' + stopNumber} - (${x}, ${y})`
+      marker.appendChild(label)
+
+      const markerContent = document.createElement('div')
+      markerContent.classList.add('marker-content')
+      marker.appendChild(markerContent)
+
+      const circle = document.createElement('div')
+      circle.classList.add('circle')
+      markerContent.appendChild(circle)
+
+      const column = document.createElement('div')
+      column.classList.add('column')
+      markerContent.appendChild(column)
     })
 
     let totalAnimationDuration = 0
@@ -139,9 +167,13 @@ class TourMapper {
         line.style.top = (point.y + padding - minY) - height + 5 + 'px'
         line.style.transform = `rotate(${angleDeg}deg)`
 
+        const lineContent = document.createElement('div')
+        lineContent.classList.add('line-content')
+        line.appendChild(lineContent)
+
         const lineAnimation = document.createElement('div')
         lineAnimation.classList.add('line-animation')
-        line.appendChild(lineAnimation)
+        lineContent.appendChild(lineAnimation)
 
         const duration = height / 500
         lineAnimation.style.animationDuration = duration + 's'
@@ -149,6 +181,17 @@ class TourMapper {
         totalAnimationDuration += duration
 
         lineContainer.appendChild(line)
+
+        const labelContainer = document.createElement('div')
+        labelContainer.classList.add('label-container')
+        line.appendChild(labelContainer)
+
+
+        const label = document.createElement('div')
+        label.classList.add('label')
+        label.innerHTML = `${Math.floor(height)}`
+        label.style.animationDelay = totalAnimationDuration - (duration / 1.5) + 's'
+        labelContainer.appendChild(label)
       }
     })
 

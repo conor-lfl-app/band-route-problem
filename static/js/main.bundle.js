@@ -57,7 +57,6 @@ var TourMapper = function () {
       var shortestDistances = [].concat(_toConsumableArray(distances)).sort(function (a, b) {
         return a - b;
       }).splice(0, Math.max(5, distances.length));
-      console.log(shortestDistances);
 
       var shortestDistance = Math.min.apply(Math, _toConsumableArray(distances));
       var shortestDestinationIndex = distances.indexOf(shortestDistance);
@@ -137,6 +136,21 @@ var TourMapper = function () {
       lineContainer.style.width = canvasWidth;
       lineContainer.style.height = canvasHeight;
 
+      var handleMarkerHover = function handleMarkerHover(e) {
+        var activeElements = document.getElementsByClassName('marker--active');
+        console.log(activeElements);
+        if (activeElements && activeElements.length > 0) {
+          for (var i = 0; i < activeElements.length; i++) {
+            activeElements[i].classList.remove('marker--active');
+          }
+        }
+        e.target.classList.add('marker--active');
+      };
+
+      var handleMarkerLeave = function handleMarkerLeave(e) {
+        e.target.classList.remove('marker--active');
+      };
+
       var tourMarkers = this.points.map(function (point, i) {
         var x = point.x,
             y = point.y;
@@ -144,19 +158,33 @@ var TourMapper = function () {
 
         var marker = document.createElement('div');
         if (i === 0) {
-          marker.classList.add('home');
+          marker.classList.add('home', 'marker--active');
         }
+
         marker.classList.add('marker');
         marker.style.left = x + padding - minX + 'px';
         marker.style.top = y + padding - minY + 'px';
         markerContainer.appendChild(marker);
+        marker.addEventListener('mouseover', handleMarkerHover);
+        marker.addEventListener('mouseleave', handleMarkerLeave);
 
         var label = document.createElement('div');
         label.classList.add('label');
-        label.innerHTML = x + ', ' + y;
-        label.style.left = x + padding - minX + 5 + 'px';
-        label.style.top = y + padding - minY - 20 + 'px';
-        markerContainer.appendChild(label);
+        var stopNumber = _this.route.indexOf(point);
+        label.innerHTML = (i === 0 ? 'Home' : 'Stop ' + stopNumber) + ' - (' + x + ', ' + y + ')';
+        marker.appendChild(label);
+
+        var markerContent = document.createElement('div');
+        markerContent.classList.add('marker-content');
+        marker.appendChild(markerContent);
+
+        var circle = document.createElement('div');
+        circle.classList.add('circle');
+        markerContent.appendChild(circle);
+
+        var column = document.createElement('div');
+        column.classList.add('column');
+        markerContent.appendChild(column);
       });
 
       var totalAnimationDuration = 0;
@@ -182,9 +210,13 @@ var TourMapper = function () {
           line.style.top = point.y + padding - minY - height + 5 + 'px';
           line.style.transform = 'rotate(' + angleDeg + 'deg)';
 
+          var lineContent = document.createElement('div');
+          lineContent.classList.add('line-content');
+          line.appendChild(lineContent);
+
           var lineAnimation = document.createElement('div');
           lineAnimation.classList.add('line-animation');
-          line.appendChild(lineAnimation);
+          lineContent.appendChild(lineAnimation);
 
           var duration = height / 500;
           lineAnimation.style.animationDuration = duration + 's';
@@ -192,6 +224,16 @@ var TourMapper = function () {
           totalAnimationDuration += duration;
 
           lineContainer.appendChild(line);
+
+          var labelContainer = document.createElement('div');
+          labelContainer.classList.add('label-container');
+          line.appendChild(labelContainer);
+
+          var label = document.createElement('div');
+          label.classList.add('label');
+          label.innerHTML = '' + Math.floor(height);
+          label.style.animationDelay = totalAnimationDuration - duration / 1.5 + 's';
+          labelContainer.appendChild(label);
         }
       });
 
