@@ -30,10 +30,6 @@ If you have questions on the challenge, please contact Jared Sartin: jared@leftf
 Tools Used:
 Babel
 
-Started project: 7:46pm on 5/10/2018
-Worked an additional hour on 5/10/2018
-Worked an additional hour (and change) on 5/11/2018
-
-The current algorithm I'm using isn't quite there yet; I tried to improve on the "next closest point" approach by developing two routes at the same time, one for the outbound trip and the other for the return home. I was able to shorten the distance with this method but I know it's not provably the shortest method. One way I could see it being improved upon is by integrating a method for looking at, say, the next closest five routes instead of just the next closest. However, this resembles more of a brute force approaches, which doesn't quite seem like the right method to solve this. Either way, hopefully the band can at least save a few tanks with this method!
+The current algorithm I'm using isn't quite there yet; In the first four hours I implemented a "next closest point" approach, and after that I tried to improving it by developing two routes at the same time, one for the outbound trip and the other for the return home. I was able to shorten the distance with this method for the first two data sets but the last one ended up being longer, showing that there are still improvements to be made. Either way, hopefully the band can at least save a few tanks with this method!
 
 To run the project, just pop open the index.html page in the static directory. Thank you!

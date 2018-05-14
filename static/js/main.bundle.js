@@ -138,7 +138,6 @@ var TourMapper = function () {
 
       var handleMarkerHover = function handleMarkerHover(e) {
         var activeElements = document.getElementsByClassName('marker--active');
-        console.log(activeElements);
         if (activeElements && activeElements.length > 0) {
           for (var i = 0; i < activeElements.length; i++) {
             activeElements[i].classList.remove('marker--active');
@@ -151,6 +150,7 @@ var TourMapper = function () {
         e.target.classList.remove('marker--active');
       };
 
+      // create the tour stops
       var tourMarkers = this.points.map(function (point, i) {
         var x = point.x,
             y = point.y;
@@ -187,6 +187,7 @@ var TourMapper = function () {
         markerContent.appendChild(column);
       });
 
+      // create the connecting lines
       var totalAnimationDuration = 0;
       var totalDistance = 0;
       var tourLines = this.route.map(function (point, i) {

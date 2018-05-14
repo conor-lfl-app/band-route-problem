@@ -97,7 +97,6 @@ class TourMapper {
 
     const handleMarkerHover = (e) => {
       const activeElements = document.getElementsByClassName('marker--active')
-      console.log(activeElements)
       if (activeElements && activeElements.length > 0) {
         for (var i = 0; i < activeElements.length; i++) {
             activeElements[i].classList.remove('marker--active')
@@ -110,6 +109,7 @@ class TourMapper {
       e.target.classList.remove('marker--active')
     }
 
+    // create the tour stops
     const tourMarkers = this.points.map( (point, i) => {
       const { x, y } = point
 
@@ -144,6 +144,7 @@ class TourMapper {
       markerContent.appendChild(column)
     })
 
+    // create the connecting lines
     let totalAnimationDuration = 0
     let totalDistance = 0
     const tourLines = this.route.map( (point, i) => {
